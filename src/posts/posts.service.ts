@@ -12,37 +12,54 @@ import {
     ParseIntPipe,
     UseGuards,
     Logger,
+    NotFoundException,
   } from '@nestjs/common';
   import { InjectRepository } from '@nestjs/typeorm';
-  import { PostRepository } from './post.repository';
+  import { PostsRepository } from './posts.repository';
 
 import { Injectable } from '@nestjs/common';
+import { CreatePostDto } from './dto/create-post.dto';
+import { Posts } from './posts.entity';
 
 @Injectable()
 export class PostsService {
 
     constructor(
-        @InjectRepository(PostRepository)
-        private postRepository: PostRepository,
+        @InjectRepository(PostsRepository)
+        private postsRepository: PostsRepository,
     ) {}
 
-    getPosts() {
-        return this.postRepository.getPosts();
+    async getPosts(): Promise<Posts[]> {
+        return this.postsRepository.getPosts();
     }
 
-    createPost() {
-        return this.postRepository.createPost();
+    async createPost(createPostDto: CreatePostDto): Promise<Posts> {
+        return this.postsRepository.createPost(createPostDto);
     }
 
-    getPostById() {
+    async getPostById(id: number): Promise<Posts> {
+        const post = await this.postsRepository.findOne(id);
+
+        if(!post) {
+            throw new NotFoundException(`Post with id ${id} not found`);
+        }
+
+        return post;
+    }
+
+    async getPostBySlug() {
 
     }
 
-    updatePost() {
-
+    async updatePost(id: number, createPostDto: CreatePostDto): Promise<Posts> {
+        return this.postsRepository.updatePost(id, createPostDto);
     }
 
-    deletePost() {
+    async deletePost(id: number): Promise<void> {
+        const result = await this.postsRepository.delete({id});
 
+        if(result.affected === 0) {
+            throw new NotFoundException(`Post with id ${id} not found`);
+        }
     }
 }

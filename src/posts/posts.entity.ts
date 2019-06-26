@@ -9,7 +9,8 @@ import {
 } from 'typeorm';
 
 @Entity()
-export class Post extends BaseEntity {
+export class Posts extends BaseEntity {
+
   @PrimaryGeneratedColumn()
   id: number;
 
