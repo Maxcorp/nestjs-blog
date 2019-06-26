@@ -38,9 +38,9 @@ export class PostsController {
         return this.postsService.getPostById(id);
     }
 
-    @Get('/:slug')
-    getPostBySlug() {
-        this.postsService.getPostBySlug();
+    @Get('/:slug/slug')
+    getPostBySlug(@Param('slug') slug: string): Promise<Posts> {
+        return this.postsService.getPostBySlug(slug);
     }
 
     @Patch('/:id')

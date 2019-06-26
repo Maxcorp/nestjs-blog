@@ -47,8 +47,14 @@ export class PostsService {
         return post;
     }
 
-    async getPostBySlug() {
+    async getPostBySlug(slug: string): Promise<Posts> {
+        const post = await this.postsRepository.findOne({where: {slug: slug}});
 
+        if(!post) {
+            throw new NotFoundException(`Post with not found`);
+        }
+
+        return post;
     }
 
     async updatePost(id: number, createPostDto: CreatePostDto): Promise<Posts> {
