@@ -18,7 +18,7 @@ import {
   import { PostsRepository } from './posts.repository';
 
 import { Injectable } from '@nestjs/common';
-import { CreatePostDto } from './dto/create-post.dto';
+import { PostDto } from './dto/post.dto';
 import { Posts } from './posts.entity';
 
 @Injectable()
@@ -33,8 +33,8 @@ export class PostsService {
         return this.postsRepository.getPosts();
     }
 
-    async createPost(createPostDto: CreatePostDto): Promise<Posts> {
-        return this.postsRepository.createPost(createPostDto);
+    async createPost(postDto: PostDto): Promise<Posts> {
+        return this.postsRepository.createPost(postDto);
     }
 
     async getPostById(id: number): Promise<Posts> {
@@ -57,8 +57,8 @@ export class PostsService {
         return post;
     }
 
-    async updatePost(id: number, createPostDto: CreatePostDto): Promise<Posts> {
-        return this.postsRepository.updatePost(id, createPostDto);
+    async updatePost(id: number, postDto: PostDto): Promise<Posts> {
+        return this.postsRepository.updatePost(id, postDto);
     }
 
     async deletePost(id: number): Promise<void> {

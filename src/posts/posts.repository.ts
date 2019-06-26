@@ -1,6 +1,6 @@
 import { Repository, EntityRepository } from 'typeorm';
 import { Posts } from './posts.entity';
-import { CreatePostDto } from './dto/create-post.dto';
+import { PostDto } from './dto/post.dto';
 import { Logger, InternalServerErrorException, HttpException, NotFoundException } from '@nestjs/common';
 import * as urlSlug from 'url-slug';
 
@@ -14,8 +14,8 @@ export class PostsRepository extends Repository<Posts> {
     return posts;
   }
 
-  async createPost(createPostDto: CreatePostDto): Promise<Posts> {
-    const { name, body } = createPostDto;
+  async createPost(postDto: PostDto): Promise<Posts> {
+    const { name, body } = postDto;
 
     const post = new Posts();
     post.name = name;
@@ -31,14 +31,14 @@ export class PostsRepository extends Repository<Posts> {
     return post;
   }
 
-  async updatePost(id, createPostDto: CreatePostDto): Promise<Posts> {
+  async updatePost(id, postDto: PostDto): Promise<Posts> {
     const post = await Posts.findOne(id);
     
     if(!post) {
       throw new NotFoundException(`Post with id ${id} not found`);
     }
 
-    const { name, body } = createPostDto;
+    const { name, body } = postDto;
 
     post.name = name;
     post.slug = urlSlug(name);

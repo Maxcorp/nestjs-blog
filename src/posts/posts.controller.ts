@@ -15,7 +15,7 @@ import {
   } from '@nestjs/common';
 
 import { PostsService } from './posts.service';
-import { CreatePostDto } from './dto/create-post.dto';
+import { PostDto } from './dto/post.dto';
 import { Posts } from './posts.entity';
 
 @Controller('posts')
@@ -29,8 +29,8 @@ export class PostsController {
     }
 
     @Post()
-    createPost(@Body() createPostDto: CreatePostDto): Promise<Posts> {
-       return this.postsService.createPost(createPostDto);
+    createPost(@Body() postDto: PostDto): Promise<Posts> {
+       return this.postsService.createPost(postDto);
     }
 
     @Get('/:id')
@@ -44,8 +44,8 @@ export class PostsController {
     }
 
     @Patch('/:id')
-    updatePost(@Param('id', ParseIntPipe) id: number, @Body() createPostDto: CreatePostDto): Promise<Posts> {
-        return this.postsService.updatePost(id, createPostDto);
+    updatePost(@Param('id', ParseIntPipe) id: number, @Body() postDto: PostDto): Promise<Posts> {
+        return this.postsService.updatePost(id, postDto);
     }
 
     @Delete('/:id')
