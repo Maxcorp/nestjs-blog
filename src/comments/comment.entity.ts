@@ -9,6 +9,7 @@ import {
     OneToMany,
   } from 'typeorm';
 import { User } from '../auth/user.entity';
+import { Posts } from '../posts/posts.entity';
   
   @Entity()
   export class Comment extends BaseEntity {
@@ -26,6 +27,9 @@ import { User } from '../auth/user.entity';
 
     // @Column()
     // userId: number;
+
+    @ManyToOne(type => Posts, post => post.comments, {eager: true})
+    post: Posts;
 
     @CreateDateColumn()
     created: Date;

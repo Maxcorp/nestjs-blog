@@ -5,10 +5,12 @@ import {
   Column,
   ManyToOne,
   CreateDateColumn,
-  UpdateDateColumn
+  UpdateDateColumn,
+  OneToMany
 } from 'typeorm';
 import { Category } from '../categories/category.entity';
 import { User } from '../auth/user.entity';
+import { Comment } from '../comments/comment.entity';
 
 @Entity()
 export class Posts extends BaseEntity {
@@ -39,6 +41,8 @@ export class Posts extends BaseEntity {
 
   // @Column()
   // userId: number;
+  @OneToMany(type => Comment, comment => comment.post, {eager: false})
+  comments: Comment[];
 
   @ManyToOne(type => User, user => user.posts, {eager: true})
   user: User;
