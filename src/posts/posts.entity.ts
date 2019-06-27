@@ -32,4 +32,7 @@ export class Posts extends BaseEntity {
 
   @ManyToOne(type => Category, category => category.posts, {eager: true})
   category: Category;
+  
+  @Column()
+  categoryId: number;
 }

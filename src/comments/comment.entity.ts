@@ -17,6 +17,12 @@ import {
     @Column()
     body: string;
 
+    // @Column()
+    // postId: number;
+
+    // @Column()
+    // userId: number;
+
     @CreateDateColumn()
     created: Date;
   
