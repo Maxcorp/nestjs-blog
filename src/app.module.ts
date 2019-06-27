@@ -8,7 +8,7 @@ import { CommentsModule } from './comments/comments.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot(typeOrmConfig),
+    TypeOrmModule.forRoot(typeOrmConfig, ),
     PostsModule,
     AuthModule,
     CategoriesModule,
