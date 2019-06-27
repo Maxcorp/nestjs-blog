@@ -7,6 +7,7 @@ import {
   HttpException,
   NotFoundException,
 } from '@nestjs/common';
+import { User } from '../auth/user.entity';
 
 @EntityRepository(Comment)
 export class CommentRepository extends Repository<Comment> {
@@ -18,14 +19,16 @@ export class CommentRepository extends Repository<Comment> {
     return comments;
   }
 
-  async createComments(commentDto: CommentDto): Promise<Comment> {
+  async createComments(commentDto: CommentDto, user: User): Promise<Comment> {
     const { body } = commentDto;
 
     const comment = new Comment();
     comment.body = body;
+    comment.user = user;
 
     try {
       await comment.save();
+      delete comment.user;
     } catch (error) {
       throw new InternalServerErrorException();
     }

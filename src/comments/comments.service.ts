@@ -14,6 +14,6 @@ export class CommentsService {
     
     async createComment(commentDto: CommentDto, user: User): Promise<Comment> {
         console.log(commentDto);
-        return await this.commentRepository.createComments(commentDto);
+        return await this.commentRepository.createComments(commentDto, user);
     }
 }
