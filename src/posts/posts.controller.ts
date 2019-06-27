@@ -13,6 +13,7 @@ import {
   UseGuards,
   Logger,
 } from '@nestjs/common';
+import { ApiUseTags, ApiBearerAuth } from '@nestjs/swagger';
 
 import { PostsService } from './posts.service';
 import { PostDto } from './dto/post.dto';
@@ -21,6 +22,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { GetUser } from 'src/auth/get-user.decorator';
 import { User } from '../auth/user.entity';
 
+@ApiUseTags('posts')
 @Controller('posts')
 export class PostsController {
   private logger = new Logger('PostsController');
@@ -33,6 +35,7 @@ export class PostsController {
   }
 
   @Post()
+  @ApiBearerAuth()
   @UseGuards(AuthGuard())
   createPost(@Body() postDto: PostDto, @GetUser() user: User): Promise<Posts> {
     return this.postsService.createPost(postDto, user);
@@ -49,6 +52,7 @@ export class PostsController {
   }
 
   @Patch('/:id')
+  @ApiBearerAuth()
   @UseGuards(AuthGuard())
   updatePost(
     @Param('id', ParseIntPipe) id: number,
@@ -59,6 +63,7 @@ export class PostsController {
   }
 
   @Delete('/:id')
+  @ApiBearerAuth()
   @UseGuards(AuthGuard())
   deletePost(
     @Param('id', ParseIntPipe) id: number,

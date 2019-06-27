@@ -17,7 +17,9 @@ import {
 import { CategoriesService } from './categories.service';
 import { CategoryDto } from './dto/category.dto';
 import { Category } from './category.entity';
+import { ApiUseTags, ApiBearerAuth } from '@nestjs/swagger';
 
+@ApiUseTags('categories')
 @Controller('categories')
 export class CategoriesController {
     private logger = new Logger('CategoriesController');
