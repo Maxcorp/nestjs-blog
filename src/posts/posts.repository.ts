@@ -47,7 +47,7 @@ export class PostsRepository extends Repository<Posts> {
     return post;
   }
 
-  async updatePost(id, postDto: PostDto): Promise<Posts> {
+  async updatePost(id, postDto: PostDto, category: Category): Promise<Posts> {
     const post = await Posts.findOne(id);
 
     if (!post) {
@@ -59,6 +59,7 @@ export class PostsRepository extends Repository<Posts> {
     post.name = name;
     post.slug = urlSlug(name);
     post.body = body;
+    post.category = category;
 
     try {
       await post.save();

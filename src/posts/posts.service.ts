@@ -38,7 +38,6 @@ export class PostsService {
 
     async createPost(postDto: PostDto): Promise<Posts> {
         const category = await this.categoryRepository.findOne(postDto.categoryId);
-        console.log(category);
 
         return this.postsRepository.createPost(postDto, category);
     }
@@ -64,7 +63,9 @@ export class PostsService {
     }
 
     async updatePost(id: number, postDto: PostDto): Promise<Posts> {
-        return this.postsRepository.updatePost(id, postDto);
+        const category = await this.categoryRepository.findOne(postDto.categoryId);
+
+        return this.postsRepository.updatePost(id, postDto, category);
     }
 
     async deletePost(id: number): Promise<void> {
