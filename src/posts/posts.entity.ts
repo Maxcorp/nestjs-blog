@@ -46,4 +46,7 @@ export class Posts extends BaseEntity {
 
   @ManyToOne(type => User, user => user.posts, {eager: true})
   user: User;
+
+  @Column()
+  userId:number;
 }
