@@ -7,4 +7,7 @@ export class PostDto {
 
     @IsNotEmpty()
     body: string;
+
+    @IsNotEmpty()
+    categoryId: number;
 }

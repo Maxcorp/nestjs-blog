@@ -32,6 +32,7 @@ export class PostsController {
 
     @Post()
     createPost(@Body() postDto: PostDto): Promise<Posts> {
+        console.log(postDto);
        return this.postsService.createPost(postDto);
     }
 

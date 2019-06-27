@@ -20,6 +20,7 @@ import {
 import { Injectable } from '@nestjs/common';
 import { PostDto } from './dto/post.dto';
 import { Posts } from './posts.entity';
+import { CategoryRepository } from '../categories/category.repository';
 
 @Injectable()
 export class PostsService {
@@ -27,6 +28,8 @@ export class PostsService {
     constructor(
         @InjectRepository(PostsRepository)
         private postsRepository: PostsRepository,
+        @InjectRepository(CategoryRepository)
+        private categoryRepository: CategoryRepository,
     ) {}
 
     async getPosts(): Promise<Posts[]> {
@@ -34,7 +37,10 @@ export class PostsService {
     }
 
     async createPost(postDto: PostDto): Promise<Posts> {
-        return this.postsRepository.createPost(postDto);
+        const category = await this.categoryRepository.findOne(postDto.categoryId);
+        console.log(category);
+
+        return this.postsRepository.createPost(postDto, category);
     }
 
     async getPostById(id: number): Promise<Posts> {
