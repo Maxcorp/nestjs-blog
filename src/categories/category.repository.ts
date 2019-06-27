@@ -1,22 +1,53 @@
 import { Repository, EntityRepository } from 'typeorm';
 import { Category } from './category.entity';
 import { CategoryDto } from './dto/category.dto';
-import { User } from 'src/auth/user.entity';
 import { Logger, InternalServerErrorException, HttpException, NotFoundException } from '@nestjs/common';
 import * as urlSlug from 'url-slug';
 
-class CategoryRepository {
+@EntityRepository(Category)
+export class CategoryRepository extends Repository<Category>{
   private logger = new Logger('CategoryRepository');
 
-  getCategories() {
+  async getCategories(): Promise<Category[]> {
+    const categories = await Category.find({});
 
+    return categories;
   }
 
-  createCategory() {
+  async createCategory(categoryDto: CategoryDto): Promise<Category> {
+    const {name} = categoryDto;
 
+    const category = new Category();
+    category.name = name;
+    category.slug = urlSlug(name);
+
+    try {
+        await category.save();
+    } catch(error) {
+        throw new InternalServerErrorException();
+    }
+
+    return category;
   }
 
-  updateCategory() {
+  async updateCategory(id: number, categoryDto: CategoryDto): Promise<Category> {
+    const category = await Category.findOne(id);
+    
+    if(!category) {
+      throw new NotFoundException(`Category with id ${id} not found`);
+    }
 
+    const { name } = categoryDto;
+
+    category.name = name;
+    category.slug = urlSlug(name);
+
+    try {
+        await category.save();
+    } catch(error) {
+        throw new InternalServerErrorException();
+    }
+
+    return category;
   }
 }

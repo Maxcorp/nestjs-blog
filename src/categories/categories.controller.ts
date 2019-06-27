@@ -30,8 +30,8 @@ export class CategoriesController {
     }
 
     @Post()
-    createCategory() {
-        return this.categoriesService.createCategory();
+    createCategory(@Body() categoryDto: CategoryDto) {
+        return this.categoriesService.createCategory(categoryDto);
     }
 
     @Get('/:id')
@@ -40,8 +40,8 @@ export class CategoriesController {
     }
 
     @Patch('/:id')
-    updateCategory(@Param('id', ParseIntPipe) id: number,) {
-        return this.categoriesService.updateCategory(id);
+    updateCategory(@Param('id', ParseIntPipe) id: number, categoryDto: CategoryDto) {
+        return this.categoriesService.updateCategory(id, categoryDto);
     }
 
     @Delete('/:id')

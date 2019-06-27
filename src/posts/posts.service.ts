@@ -51,7 +51,7 @@ export class PostsService {
         const post = await this.postsRepository.findOne({where: {slug: slug}});
 
         if(!post) {
-            throw new NotFoundException(`Post with not found`);
+            throw new NotFoundException(`Post not found`);
         }
 
         return post;
