@@ -16,14 +16,17 @@ import { User } from '../auth/user.entity';
 
 @EntityRepository(Posts)
 export class PostsRepository extends Repository<Posts> {
-
   async getPosts(): Promise<Posts[]> {
     const posts = await Posts.find({});
 
     return posts;
   }
 
-  async createPost(postDto: PostDto, category: Category, user: User): Promise<Posts> {
+  async createPost(
+    postDto: PostDto,
+    category: Category,
+    user: User,
+  ): Promise<Posts> {
     const { name, body, categoryId } = postDto;
 
     const post = new Posts();
@@ -43,8 +46,13 @@ export class PostsRepository extends Repository<Posts> {
     return post;
   }
 
-  async updatePost(id, postDto: PostDto, category: Category, user: User): Promise<Posts> {
-    const post = await Posts.findOne({where: {id, userId: user.id}});
+  async updatePost(
+    id,
+    postDto: PostDto,
+    category: Category,
+    user: User,
+  ): Promise<Posts> {
+    const post = await Posts.findOne({ where: { id, userId: user.id } });
 
     if (!post) {
       throw new NotFoundException(`Post with id ${id} not found`);

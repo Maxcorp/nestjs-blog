@@ -1,18 +1,18 @@
 import {
-    Controller,
-    Get,
-    Post,
-    Body,
-    Param,
-    Delete,
-    Patch,
-    Query,
-    UsePipes,
-    ValidationPipe,
-    ParseIntPipe,
-    UseGuards,
-    Logger,
-  } from '@nestjs/common';
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Delete,
+  Patch,
+  Query,
+  UsePipes,
+  ValidationPipe,
+  ParseIntPipe,
+  UseGuards,
+  Logger,
+} from '@nestjs/common';
 
 import { CommentsService } from './comments.service';
 import { CommentDto } from './dto/comment.dto';
@@ -24,13 +24,12 @@ import { User } from 'src/auth/user.entity';
 @Controller('comments')
 @UseGuards(AuthGuard())
 export class CommentsController {
-    
-    private logger = new Logger('CommentsController');
+  private logger = new Logger('CommentsController');
 
-    constructor(private commentsService: CommentsService) {}
+  constructor(private commentsService: CommentsService) {}
 
-    @Post()
-    createComment(@Body() commentDto: CommentDto, @GetUser() user: User) {
-        return this.commentsService.createComment(commentDto, user);
-    }
+  @Post()
+  createComment(@Body() commentDto: CommentDto, @GetUser() user: User) {
+    return this.commentsService.createComment(commentDto, user);
+  }
 }
