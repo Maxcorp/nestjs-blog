@@ -20,6 +20,8 @@ import { Posts } from './posts.entity';
 
 @Controller('posts')
 export class PostsController {
+    
+    private logger = new Logger('PostsController');
 
     constructor(private postsService: PostsService) {}
 
