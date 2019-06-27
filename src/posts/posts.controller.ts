@@ -17,6 +17,9 @@ import {
 import { PostsService } from './posts.service';
 import { PostDto } from './dto/post.dto';
 import { Posts } from './posts.entity';
+import { AuthGuard } from '@nestjs/passport';
+import { GetUser } from 'src/auth/get-user.decorator';
+import { User } from '../auth/user.entity';
 
 @Controller('posts')
 export class PostsController {
@@ -31,9 +34,9 @@ export class PostsController {
     }
 
     @Post()
-    createPost(@Body() postDto: PostDto): Promise<Posts> {
-        console.log(postDto);
-       return this.postsService.createPost(postDto);
+    @UseGuards(AuthGuard())
+    createPost(@Body() postDto: PostDto, @GetUser() user: User): Promise<Posts> {
+       return this.postsService.createPost(postDto, user);
     }
 
     @Get('/:id')
@@ -47,12 +50,14 @@ export class PostsController {
     }
 
     @Patch('/:id')
-    updatePost(@Param('id', ParseIntPipe) id: number, @Body() postDto: PostDto): Promise<Posts> {
-        return this.postsService.updatePost(id, postDto);
+    @UseGuards(AuthGuard())
+    updatePost(@Param('id', ParseIntPipe) id: number, @Body() postDto: PostDto, @GetUser() user: User): Promise<Posts> {
+        return this.postsService.updatePost(id, postDto, user);
     }
 
     @Delete('/:id')
-    deletePost(@Param('id', ParseIntPipe) id: number): Promise<void> {
-        return this.postsService.deletePost(id);
+    @UseGuards(AuthGuard())
+    deletePost(@Param('id', ParseIntPipe) id: number, @GetUser() user: User): Promise<void> {
+        return this.postsService.deletePost(id, user);
     }
 }

@@ -21,6 +21,7 @@ import { Injectable } from '@nestjs/common';
 import { PostDto } from './dto/post.dto';
 import { Posts } from './posts.entity';
 import { CategoryRepository } from '../categories/category.repository';
+import { User } from '../auth/user.entity';
 
 @Injectable()
 export class PostsService {
@@ -36,10 +37,10 @@ export class PostsService {
         return this.postsRepository.getPosts();
     }
 
-    async createPost(postDto: PostDto): Promise<Posts> {
+    async createPost(postDto: PostDto, user: User): Promise<Posts> {
         const category = await this.categoryRepository.findOne(postDto.categoryId);
 
-        return this.postsRepository.createPost(postDto, category);
+        return this.postsRepository.createPost(postDto, category, user);
     }
 
     async getPostById(id: number): Promise<Posts> {
@@ -62,17 +63,17 @@ export class PostsService {
         return post;
     }
 
-    async updatePost(id: number, postDto: PostDto): Promise<Posts> {
+    async updatePost(id: number, postDto: PostDto, user: User): Promise<Posts> {
         const category = await this.categoryRepository.findOne(postDto.categoryId);
 
-        return this.postsRepository.updatePost(id, postDto, category);
+        return this.postsRepository.updatePost(id, postDto, category, user);
     }
 
-    async deletePost(id: number): Promise<void> {
-        const result = await this.postsRepository.delete({id});
+    async deletePost(id: number, user: User): Promise<void> {
+        // const result = await this.postsRepository.delete({id, userId: user.id});
 
-        if(result.affected === 0) {
-            throw new NotFoundException(`Post with id ${id} not found`);
-        }
+        // if(result.affected === 0) {
+        //     throw new NotFoundException(`Post with id ${id} not found`);
+        // }
     }
 }

@@ -8,6 +8,7 @@ import {
   UpdateDateColumn
 } from 'typeorm';
 import { Category } from '../categories/category.entity';
+import { User } from '../auth/user.entity';
 
 @Entity()
 export class Posts extends BaseEntity {
@@ -35,4 +36,10 @@ export class Posts extends BaseEntity {
   
   @Column()
   categoryId: number;
+
+  // @Column()
+  // userId: number;
+
+  @ManyToOne(type => User, user => user.posts, {eager: true})
+  user: User;
 }

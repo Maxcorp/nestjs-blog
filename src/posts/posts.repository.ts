@@ -12,15 +12,10 @@ import * as urlSlug from 'url-slug';
 import { CategoryRepository } from '../categories/category.repository';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Category } from '../categories/category.entity';
+import { User } from '../auth/user.entity';
 
 @EntityRepository(Posts)
 export class PostsRepository extends Repository<Posts> {
-  // constructor(
-  //   @InjectRepository(CategoryRepository)
-  //   private categoryRepository: CategoryRepository,
-  //  ) {
-  //   super();
-  //  }
 
   async getPosts(): Promise<Posts[]> {
     const posts = await Posts.find({});
@@ -28,7 +23,7 @@ export class PostsRepository extends Repository<Posts> {
     return posts;
   }
 
-  async createPost(postDto: PostDto, category: Category): Promise<Posts> {
+  async createPost(postDto: PostDto, category: Category, user: User): Promise<Posts> {
     const { name, body, categoryId } = postDto;
 
     const post = new Posts();
@@ -37,6 +32,7 @@ export class PostsRepository extends Repository<Posts> {
     post.body = body;
     post.body = body;
     post.category = category;
+    post.user = user;
 
     try {
       await post.save();
@@ -47,8 +43,8 @@ export class PostsRepository extends Repository<Posts> {
     return post;
   }
 
-  async updatePost(id, postDto: PostDto, category: Category): Promise<Posts> {
-    const post = await Posts.findOne(id);
+  async updatePost(id, postDto: PostDto, category: Category, user: User): Promise<Posts> {
+    const post = await Posts.findOne({where: {id, userId: user.id}});
 
     if (!post) {
       throw new NotFoundException(`Post with id ${id} not found`);
@@ -60,6 +56,7 @@ export class PostsRepository extends Repository<Posts> {
     post.slug = urlSlug(name);
     post.body = body;
     post.category = category;
+    post.user = user;
 
     try {
       await post.save();
