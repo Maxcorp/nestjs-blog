@@ -12,8 +12,15 @@ import {
   ParseIntPipe,
   UseGuards,
   Logger,
+  UseInterceptors,
+  UploadedFile,
+  UploadedFiles,
+  Res,
 } from '@nestjs/common';
-import { ApiUseTags, ApiBearerAuth } from '@nestjs/swagger';
+import { FileInterceptor, FileFieldsInterceptor } from '@nestjs/platform-express';
+import { ApiUseTags, ApiBearerAuth, ApiConsumes, ApiImplicitFile } from '@nestjs/swagger';
+import { diskStorage } from  'multer';
+import { extname } from  'path';
 
 import { PostsService } from './posts.service';
 import { PostDto } from './dto/post.dto';
@@ -37,8 +44,19 @@ export class PostsController {
   @Post()
   @ApiBearerAuth()
   @UseGuards(AuthGuard())
-  createPost(@Body() postDto: PostDto, @GetUser() user: User): Promise<Posts> {
-    return this.postsService.createPost(postDto, user);
+  @UseInterceptors(FileInterceptor('img', {
+    storage: diskStorage({
+      destination: './uploads'
+      , filename: (req, file, cb) => {
+        const randomName = Array(32).fill(null).map(() => (Math.round(Math.random() * 16)).toString(16)).join('')
+        cb(null, `${randomName}${extname(file.originalname)}`)
+      }
+    })
+  }))
+  @ApiConsumes('multipart/form-data')
+  @ApiImplicitFile({ name: 'img' })
+  createPost(@Body() postDto: PostDto, @GetUser() user: User, @UploadedFile() img): Promise<Posts> {
+    return this.postsService.createPost(postDto, user, img);
   }
 
   @Get('/:id')
@@ -70,5 +88,21 @@ export class PostsController {
     @GetUser() user: User,
   ): Promise<void> {
     return this.postsService.deletePost(id, user);
+  }
+
+  @Post('upload')
+  @UseInterceptors(FileInterceptor('avatar', {
+    storage: diskStorage({
+      destination: './uploads'
+      , filename: (req, file, cb) => {
+        // Generating a 32 random chars long string
+        const randomName = Array(32).fill(null).map(() => (Math.round(Math.random() * 16)).toString(16)).join('')
+        //Calling the callback passing the random name generated with the original extension name
+        cb(null, `${randomName}${extname(file.originalname)}`)
+      }
+    })
+  }))
+  uploadFile(@UploadedFile() avatar) {
+    console.log(avatar);
   }
 }

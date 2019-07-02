@@ -37,10 +37,10 @@ export class PostsService {
         return this.postsRepository.getPosts();
     }
 
-    async createPost(postDto: PostDto, user: User): Promise<Posts> {
+    async createPost(postDto: PostDto, user: User, img): Promise<Posts> {
         const category = await this.categoryRepository.findOne(postDto.categoryId);
 
-        return this.postsRepository.createPost(postDto, category, user);
+        return this.postsRepository.createPost(postDto, category, user, img);
     }
 
     async getPostById(id: number): Promise<Posts> {

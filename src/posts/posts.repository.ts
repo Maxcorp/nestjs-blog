@@ -26,6 +26,7 @@ export class PostsRepository extends Repository<Posts> {
     postDto: PostDto,
     category: Category,
     user: User,
+    img,
   ): Promise<Posts> {
     const { name, body, categoryId } = postDto;
 
@@ -36,6 +37,9 @@ export class PostsRepository extends Repository<Posts> {
     post.body = body;
     post.category = category;
     post.user = user;
+    if(img.filename) {
+      post.img = img.filename;
+    }
 
     try {
       await post.save();

@@ -27,6 +27,9 @@ export class Posts extends BaseEntity {
   @Column()
   body: string;
 
+  @Column('text', { nullable: true })
+  img:string;
+
   @CreateDateColumn()
   created: Date;
 
