@@ -22,6 +22,7 @@ import { PostDto } from './dto/post.dto';
 import { Posts } from './posts.entity';
 import { CategoryRepository } from '../categories/category.repository';
 import { User } from '../auth/user.entity';
+import * as sharp from 'sharp';
 
 @Injectable()
 export class PostsService {
@@ -39,6 +40,13 @@ export class PostsService {
 
     async createPost(postDto: PostDto, user: User, img): Promise<Posts> {
         const category = await this.categoryRepository.findOne(postDto.categoryId);
+
+        sharp('./uploads/'+img.filename)
+        .rotate()
+        .resize(250)
+        .toFile('./uploads/thumb_'+img.filename)
+        .then( data => {})
+        .catch( err => {});
 
         return this.postsRepository.createPost(postDto, category, user, img);
     }

@@ -16,6 +16,8 @@ import {
   UploadedFile,
   UploadedFiles,
   Res,
+  HttpException,
+  HttpStatus,
 } from '@nestjs/common';
 import {
   FileInterceptor,
@@ -57,20 +59,24 @@ export class PostsController {
       storage: diskStorage({
         destination: './uploads',
         filename: (req, file, cb) => {
+          let ext = extname(file.originalname);
           if (
-            extname(file.originalname) !== '.jpg' &&
-            extname(file.originalname) !== '.png' &&
-            extname(file.originalname) !== '.jpeg'
+            ext !== '.jpg' &&
+            ext !== '.png' &&
+            ext !== '.jpeg'
           ) {
-            return cb(new Error('Only imgs are allowed'));
+            return cb(
+              new HttpException('Only images are allowed!', HttpStatus.BAD_REQUEST, ),
+              null,
+            );
           }
-
           const randomName = Array(32)
             .fill(null)
             .map(() => Math.round(Math.random() * 16).toString(16))
             .join('');
           cb(null, `${randomName}${extname(file.originalname)}`);
         },
+        limits: { fileSize: 1024 * 1024 },
       }),
     }),
   )
