@@ -17,10 +17,18 @@ import {
   UploadedFiles,
   Res,
 } from '@nestjs/common';
-import { FileInterceptor, FileFieldsInterceptor } from '@nestjs/platform-express';
-import { ApiUseTags, ApiBearerAuth, ApiConsumes, ApiImplicitFile } from '@nestjs/swagger';
-import { diskStorage } from  'multer';
-import { extname } from  'path';
+import {
+  FileInterceptor,
+  FileFieldsInterceptor,
+} from '@nestjs/platform-express';
+import {
+  ApiUseTags,
+  ApiBearerAuth,
+  ApiConsumes,
+  ApiImplicitFile,
+} from '@nestjs/swagger';
+import { diskStorage, path } from 'multer';
+import { extname } from 'path';
 
 import { PostsService } from './posts.service';
 import { PostDto } from './dto/post.dto';
@@ -44,18 +52,35 @@ export class PostsController {
   @Post()
   @ApiBearerAuth()
   @UseGuards(AuthGuard())
-  @UseInterceptors(FileInterceptor('img', {
-    storage: diskStorage({
-      destination: './uploads'
-      , filename: (req, file, cb) => {
-        const randomName = Array(32).fill(null).map(() => (Math.round(Math.random() * 16)).toString(16)).join('')
-        cb(null, `${randomName}${extname(file.originalname)}`)
-      }
-    })
-  }))
+  @UseInterceptors(
+    FileInterceptor('img', {
+      storage: diskStorage({
+        destination: './uploads',
+        filename: (req, file, cb) => {
+          if (
+            extname(file.originalname) !== '.jpg' &&
+            extname(file.originalname) !== '.png' &&
+            extname(file.originalname) !== '.jpeg'
+          ) {
+            return cb(new Error('Only imgs are allowed'));
+          }
+
+          const randomName = Array(32)
+            .fill(null)
+            .map(() => Math.round(Math.random() * 16).toString(16))
+            .join('');
+          cb(null, `${randomName}${extname(file.originalname)}`);
+        },
+      }),
+    }),
+  )
   @ApiConsumes('multipart/form-data')
   @ApiImplicitFile({ name: 'img' })
-  createPost(@Body() postDto: PostDto, @GetUser() user: User, @UploadedFile() img): Promise<Posts> {
+  createPost(
+    @Body() postDto: PostDto,
+    @GetUser() user: User,
+    @UploadedFile() img,
+  ): Promise<Posts> {
     return this.postsService.createPost(postDto, user, img);
   }
 
@@ -91,17 +116,26 @@ export class PostsController {
   }
 
   @Post('upload')
-  @UseInterceptors(FileInterceptor('avatar', {
-    storage: diskStorage({
-      destination: './uploads'
-      , filename: (req, file, cb) => {
-        // Generating a 32 random chars long string
-        const randomName = Array(32).fill(null).map(() => (Math.round(Math.random() * 16)).toString(16)).join('')
-        //Calling the callback passing the random name generated with the original extension name
-        cb(null, `${randomName}${extname(file.originalname)}`)
-      }
-    })
-  }))
+  @UseInterceptors(
+    FileInterceptor('avatar', {
+      storage: diskStorage({
+        destination: './uploads',
+        filename: (req, file, cb) => {
+          if (extname(file.originalname) !== '.jpg') {
+            return cb(new Error('Only pdfs are allowed'));
+          }
+
+          // Generating a 32 random chars long string
+          const randomName = Array(32)
+            .fill(null)
+            .map(() => Math.round(Math.random() * 16).toString(16))
+            .join('');
+          //Calling the callback passing the random name generated with the original extension name
+          cb(null, `${randomName}${extname(file.originalname)}`);
+        },
+      }),
+    }),
+  )
   uploadFile(@UploadedFile() avatar) {
     console.log(avatar);
   }
