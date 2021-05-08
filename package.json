@@ -42,7 +42,7 @@
     "sharp": "^0.22.1",
     "slug": "^1.1.0",
     "swagger-ui-express": "^4.0.6",
-    "typeorm": "^0.2.18",
+    "typeorm": "^0.2.25",
     "url-slug": "^2.1.1"
   },
   "devDependencies": {
